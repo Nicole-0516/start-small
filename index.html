@@ -331,6 +331,7 @@
         <p>Start Small · 2026 · Warmly Made</p>
     </footer>
 
+    <script>
         // 开发者配置区
         const DEV_CONFIG = {
             // DeepSeek 推荐配置
@@ -367,6 +368,7 @@
                 encodedKey: DEV_CONFIG.ENCODED_KEY,
                 apiBase: DEV_CONFIG.API_BASE,
                 model: DEV_CONFIG.MODEL || 'deepseek-chat',
+                apiKey: '',
                 
                 resistanceLabels: {
                     'R1': '太重要了，不敢开始',
@@ -426,134 +428,134 @@
                 templates: {
                     'T1': { // 写作输出类
                         'R1': [
-                            { type: 'A', label: '试着看看', content: '先打开文档，不写内容，只看一眼标题和要求' },
-                            { type: 'B', label: '动一动笔', content: '先写下标题，或者列出 2-3 个最粗略的点' },
-                            { type: 'C', label: '写一小句', content: '先写第一句，不要求写好，只要写出来' }
+                            { type: 'A', label: '更轻一点', content: '先打开文档，不写内容，只看一眼标题和要求' },
+                            { type: 'B', label: '正常开始', content: '先写下标题，或者列出 2-3 个最粗略的点' },
+                            { type: 'C', label: '更具体一点', content: '先写第一句，不要求写好，只要写出来' }
                         ],
                         'R2': [
-                            { type: 'A', label: '看一眼', content: '先打开文档，给自己 5 分钟，只决定要写哪一部分' },
-                            { type: 'B', label: '列个点', content: '先只写提纲，不进入完整正文' },
-                            { type: 'C', label: '打个草', content: '先把开头那一小段写成很粗糙的草稿' }
+                            { type: 'A', label: '更轻一点', content: '先打开文档，给自己 5 分钟，只决定要写哪一部分' },
+                            { type: 'B', label: '正常开始', content: '先只写提纲，不进入完整正文' },
+                            { type: 'C', label: '更具体一点', content: '先把开头那一小段写成很粗糙的草稿' }
                         ],
                         'R3': [
-                            { type: 'A', label: '允许写烂', content: '先允许自己写一个很烂的版本，不用改' },
-                            { type: 'B', label: '写草稿', content: '先写提纲或 bullet points，不要求完整句子' },
-                            { type: 'C', label: '随便写', content: '先写两三句最粗糙的草稿，之后再改' }
+                            { type: 'A', label: '更轻一点', content: '先允许自己写一个很烂的版本，不用改' },
+                            { type: 'B', label: '正常开始', content: '先写提纲或 bullet points，不要求完整句子' },
+                            { type: 'C', label: '更具体一点', content: '先写两三句最粗糙的草稿，之后再改' }
                         ],
                         'R4': [
-                            { type: 'A', label: '准备环境', content: '先把“{task}”需要的文档或页面打开，哪怕先看一眼标题' },
-                            { type: 'B', label: '列三个点', content: '先列出 3 个你可能会写的关键词' },
-                            { type: 'C', label: '写最简单那句', content: '先写第一段里最容易写的一句' }
+                            { type: 'A', label: '更轻一点', content: '先把“{task}”需要的文档或页面打开，哪怕先看一眼标题' },
+                            { type: 'B', label: '正常开始', content: '先列出 3 个你可能会写的关键词' },
+                            { type: 'C', label: '更具体一点', content: '先写第一段里最容易写的一句' }
                         ]
                     },
                     'T2': { // 阅读复习类
                         'R1': [
-                            { type: 'A', label: '只翻一页', content: '先把资料打开，只看目录或第一页' },
-                            { type: 'B', label: '划个线', content: '先看前 2 页，划出你最熟悉的部分' },
-                            { type: 'C', label: '记一个点', content: '先读一小段，并写下 1 句你看懂了什么' }
+                            { type: 'A', label: '更轻一点', content: '先把资料打开，只看目录或第一页' },
+                            { type: 'B', label: '正常开始', content: '先看前 2 页，划出你最熟悉的部分' },
+                            { type: 'C', label: '更具体一点', content: '先读一小段，并写下 1 句你看懂了什么' }
                         ],
                         'R2': [
-                            { type: 'A', label: '定个范围', content: '先只决定今天看哪一小部分，不要求全部完成' },
-                            { type: 'B', label: '看几页', content: '先看 3-5 页，停下来也没关系' },
-                            { type: 'C', label: '圈关键词', content: '先读第一页并记 2 个关键词' }
+                            { type: 'A', label: '更轻一点', content: '先只决定今天看哪一小部分，不要求全部完成' },
+                            { type: 'B', label: '正常开始', content: '先看 3-5 页，停下来也没关系' },
+                            { type: 'C', label: '更具体一点', content: '先读第一页并记 2 个关键词' }
                         ],
                         'R3': [
-                            { type: 'A', label: '随便扫扫', content: '先浏览，不要求立刻记住' },
-                            { type: 'B', label: '标个重点', content: '先只标出重点，不急着理解全部' },
-                            { type: 'C', label: '懂一点是一点', content: '先看一页，并写下一个你已经明白的点' }
+                            { type: 'A', label: '更轻一点', content: '先浏览，不要求立刻记住' },
+                            { type: 'B', label: '正常开始', content: '先只标出重点，不急着理解全部' },
+                            { type: 'C', label: '更具体一点', content: '先看一页，并写下一个你已经明白的点' }
                         ],
                         'R4': [
-                            { type: 'A', label: '翻开就行', content: '先打开资料，看目录或标题' },
-                            { type: 'B', label: '挑短的看', content: '先从最短、最熟悉的一部分开始看' },
-                            { type: 'C', label: '圈三个词', content: '先读第一页，并圈出 3 个关键词' }
+                            { type: 'A', label: '更轻一点', content: '先打开资料，看目录或标题' },
+                            { type: 'B', label: '正常开始', content: '先从最短、最熟悉的一部分开始看' },
+                            { type: 'C', label: '更具体一点', content: '先读第一页，并圈出 3 个关键词' }
                         ]
                     },
                     'T3': { // 沟通回复类
                         'R1': [
-                            { type: 'A', label: '打开看看', content: '先打开这封邮件或对话，不急着回复' },
-                            { type: 'B', label: '写个抬头', content: '先写称呼和第一句 opening' },
-                            { type: 'C', label: '打个糙稿', content: '先写一个很简短的回复草稿，之后再润色' }
+                            { type: 'A', label: '更轻一点', content: '先打开这封邮件或对话，不急着回复' },
+                            { type: 'B', label: '正常开始', content: '先写称呼和第一句 opening' },
+                            { type: 'C', label: '更具体一点', content: '先写一个很简短的回复草稿，之后再润色' }
                         ],
                         'R2': [
-                            { type: 'A', label: '想个核心', content: '先判断这条回复最核心要说哪一件事' },
-                            { type: 'B', label: '列两个点', content: '先列出 2 个你必须回复的点' },
-                            { type: 'C', label: '说重点', content: '先把最核心的一段回复写出来' }
+                            { type: 'A', label: '更轻一点', content: '先判断这条回复最核心要说哪一件事' },
+                            { type: 'B', label: '正常开始', content: '先列出 2 个你必须回复的点' },
+                            { type: 'C', label: '更具体一点', content: '先把最核心的一段回复写出来' }
                         ],
                         'R3': [
-                            { type: 'A', label: '写给自己看', content: '先写一个只给自己看的草稿版本' },
-                            { type: 'B', label: '说大白话', content: '先用最直接的话写出意思，不考虑礼貌润色' },
-                            { type: 'C', label: '先写主体', content: '先把回复主体写出来，结尾和措辞稍后再改' }
+                            { type: 'A', label: '更轻一点', content: '先写一个只给自己看的草稿版本' },
+                            { type: 'B', label: '正常开始', content: '先用最直接的话写出意思，不考虑礼貌润色' },
+                            { type: 'C', label: '更具体一点', content: '先把回复主体写出来，结尾和措辞稍后再改' }
                         ],
                         'R4': [
-                            { type: 'A', label: '复制一下', content: '先复制对方最需要你回应的那一句' },
-                            { type: 'B', label: '打个招呼', content: '先写称呼 + “谢谢你的邮件/消息”' },
-                            { type: 'C', label: '写第一句', content: '先写第一句：你这次主要想表达什么' }
+                            { type: 'A', label: '更轻一点', content: '先复制对方最需要你回应的那一句' },
+                            { type: 'B', label: '正常开始', content: '先写称呼 + “谢谢你的邮件/消息”' },
+                            { type: 'C', label: '更具体一点', content: '先写第一句：你这次主要想表达什么' }
                         ]
                     },
                     'T4': { // 文件整理制作类
                         'R1': [
-                            { type: 'A', label: '瞅一眼', content: '先打开文件，看看现在停在哪' },
-                            { type: 'B', label: '改个标题', content: '先只改标题、目录或第一页' },
-                            { type: 'C', label: '做一个块', content: '先完成一个最小模块，比如一页或一栏' }
+                            { type: 'A', label: '更轻一点', content: '先打开文件，看看现在停在哪' },
+                            { type: 'B', label: '正常开始', content: '先只改标题、目录或第一页' },
+                            { type: 'C', label: '更具体一点', content: '先完成一个最小模块，比如一页或一栏' }
                         ],
                         'R2': [
-                            { type: 'A', label: '切一小块', content: '先把这件事拆成今天只做的一小部分' },
-                            { type: 'B', label: '处理开头', content: '先只处理第一页、第一栏或第一部分' },
-                            { type: 'C', label: '改个明显的', content: '先完成一个最简单的可见修改' }
+                            { type: 'A', label: '更轻一点', content: '先把这件事拆成今天只做的一小部分' },
+                            { type: 'B', label: '正常开始', content: '先只处理第一页、第一栏或第一部分' },
+                            { type: 'C', label: '更具体一点', content: '先完成一个最简单的可见修改' }
                         ],
                         'R3': [
-                            { type: 'A', label: '翻翻看', content: '先浏览现有内容，不急着改' },
-                            { type: 'B', label: '动个框架', content: '先改结构，不改细节' },
-                            { type: 'C', label: '修个错', content: '先把最明显的一处问题修掉' }
+                            { type: 'A', label: '更轻一点', content: '先浏览现有内容，不急着改' },
+                            { type: 'B', label: '正常开始', content: '先改结构，不改细节' },
+                            { type: 'C', label: '更具体一点', content: '先把最明显的一处问题修掉' }
                         ],
                         'R4': [
-                            { type: 'A', label: '找找位置', content: '先打开文件，把要处理的部分找出来' },
-                            { type: 'B', label: '挑三个改', content: '先列出你今天只要改的 3 个地方' },
-                            { type: 'C', label: '改第一处', content: '先处理第一处最明确的问题' }
+                            { type: 'A', label: '更轻一点', content: '先打开文件，把要处理的部分找出来' },
+                            { type: 'B', label: '正常开始', content: '先列出你今天只要改的 3 个地方' },
+                            { type: 'C', label: '更具体一点', content: '先处理第一处最明确的问题' }
                         ]
                     },
                     'T5': { // 生活执行类
                         'R1': [
-                            { type: 'A', label: '去现场', content: '先走到要处理“{task}”的地方，看一眼现状' },
-                            { type: 'B', label: '准备环境', content: '先把最基本的工具或材料准备好' },
-                            { type: 'C', label: '动第一下', content: '先做第一步最简单的动作' }
+                            { type: 'A', label: '更轻一点', content: '先走到要处理“{task}”的地方，看一眼现状' },
+                            { type: 'B', label: '正常开始', content: '先把最基本的工具或材料准备好' },
+                            { type: 'C', label: '更具体一点', content: '先做第一步最简单的动作' }
                         ],
                         'R2': [
-                            { type: 'A', label: '认领任务', content: '先看一眼今天实际要处理什么，不急着全部做完' },
-                            { type: 'B', label: '摆开阵势', content: '先把会用到的工具或材料准备出来' },
-                            { type: 'C', label: '走第一步', content: '先完成第一步，比如把米煮上 / 把衣服放进洗衣机' }
+                            { type: 'A', label: '更轻一点', content: '先看一眼今天实际要处理什么，不急着全部做完' },
+                            { type: 'B', label: '正常开始', content: '先把会用到的工具或材料准备出来' },
+                            { type: 'C', label: '更具体一点', content: '先完成第一步，比如把米煮上 / 把衣服放进洗衣机' }
                         ],
                         'R3': [
-                            { type: 'A', label: '先动起来', content: '先开始，不要求一次做得很完美' },
-                            { type: 'B', label: '做个低配版', content: '先只做最基础版本，不加额外要求' },
-                            { type: 'C', label: '搞定核心', content: '先把最核心的一步做掉，其他之后再说' }
+                            { type: 'A', label: '更轻一点', content: '先开始，不要求一次做得很完美' },
+                            { type: 'B', label: '正常开始', content: '先只做最基础版本，不加额外要求' },
+                            { type: 'C', label: '更具体一点', content: '先把最核心的一步做掉，其他之后再说' }
                         ],
                         'R4': [
-                            { type: 'A', label: '清点一下', content: '先看一下这件事最先需要什么工具 or 材料' },
-                            { type: 'B', label: '准备好', content: '先准备第一步会用到的东西' },
-                            { type: 'C', label: '做个开端', content: '先把第一个明确动作做掉' }
+                            { type: 'A', label: '更轻一点', content: '先看一下这件事最先需要什么工具 or 材料' },
+                            { type: 'B', label: '正常开始', content: '先准备第一步会用到的东西' },
+                            { type: 'C', label: '更具体一点', content: '先把第一个明确动作做掉' }
                         ]
                     },
                     'T6': { // 运动健身类
                         'R1': [
-                            { type: 'A', label: '去现场', content: '先走到运动的地方，哪怕只是换上运动鞋' },
-                            { type: 'B', label: '准备装备', content: '先把运动服拿出来放在视线范围内' },
-                            { type: 'C', label: '动一下', content: '先做 3 个简单的拉伸动作，不要求正式开始' }
+                            { type: 'A', label: '更轻一点', content: '先走到运动的地方，哪怕只是换上运动鞋' },
+                            { type: 'B', label: '正常开始', content: '先把运动服拿出来放在视线范围内' },
+                            { type: 'C', label: '更具体一点', content: '先做 3 个简单的拉伸动作，不要求正式开始' }
                         ],
                         'R2': [
-                            { type: 'A', label: '换个衣服', content: '先换好运动服，不一定要立刻开始练' },
-                            { type: 'B', label: '定个极简版', content: '先决定今天只练 5 分钟，哪怕只是在垫子上坐坐' },
-                            { type: 'C', label: '走第一步', content: '先完成第一组动作，哪怕只有 10 次' }
+                            { type: 'A', label: '更轻一点', content: '先换好运动服，不一定要立刻开始练' },
+                            { type: 'B', label: '正常开始', content: '先决定今天只练 5 分钟，哪怕只是在垫子上坐坐' },
+                            { type: 'C', label: '更具体一点', content: '先完成第一组动作，哪怕只有 10 次' }
                         ],
                         'R3': [
-                            { type: 'A', label: '先动起来', content: '先开始热身，不要求一次练得很猛' },
-                            { type: 'B', label: '做个低配版', content: '先只做最基础的动作，不追求强度' },
-                            { type: 'C', label: '搞定核心', content: '先把最核心的一组动作做完，其他之后再说' }
+                            { type: 'A', label: '更轻一点', content: '先开始热身，不要求一次练得很猛' },
+                            { type: 'B', label: '正常开始', content: '先只做最基础的动作，不追求强度' },
+                            { type: 'C', label: '更具体一点', content: '先把最核心的一组动作做完，其他之后再说' }
                         ],
                         'R4': [
-                            { type: 'A', label: '换上鞋', content: '先换好鞋，站在垫子上' },
-                            { type: 'B', label: '准备好', content: '先把运动器械或视频打开' },
-                            { type: 'C', label: '做个开端', content: '先把第一个拉伸动作做掉' }
+                            { type: 'A', label: '更轻一点', content: '先换好鞋，站在垫子上' },
+                            { type: 'B', label: '正常开始', content: '先把运动器械或视频打开' },
+                            { type: 'C', label: '更具体一点', content: '先把第一个拉伸动作做掉' }
                         ]
                     }
                 },
@@ -569,8 +571,11 @@
                     if (savedAI) {
                         const config = JSON.parse(savedAI);
                         this.aiEnabled = config.enabled;
-                        this.apiKey = config.key;
-                        this.apiBase = config.base || 'https://api.openai.com/v1';
+                        this.apiKey = config.key || '';
+                        this.apiBase = config.base || DEV_CONFIG.API_BASE;
+                    } else {
+                        // 如果没有保存过配置，则默认开启 AI
+                        this.aiEnabled = true;
                     }
                 },
 
@@ -587,7 +592,6 @@
                     const t = task.toLowerCase();
                     this.currentVerb = '处理';
                     
-                    // 1. 先检查更具体的任务类型（如沟通、生活执行），避免被通用的“写/做”拦截
                     if (/(邮件|回复|联系|message|消息|email|发给|问|mail|reply|contact|send)/.test(t)) {
                         this.currentVerb = '回'; return 'T3';
                     }
@@ -603,8 +607,6 @@
                     if (/(运动|健身|跑步|锻炼|瑜伽|拉伸|练|gym|workout|exercise|run|yoga|stretch)/.test(t)) {
                         this.currentVerb = '做'; return 'T6';
                     }
-                    
-                    // 2. 最后再匹配通用的“写/做”类任务
                     if (/(写|essay|report|提纲|草稿|正文|稿|文案|paper|writing|thesis|dissertation)/.test(t)) {
                         this.currentVerb = '写'; return 'T1';
                     }
@@ -613,8 +615,8 @@
                 },
 
                 getDefaultResistance(type) {
-                    const strategy = { 'T1': 'R3', 'T2': 'R2', 'T3': 'R1', 'T4': 'R2', 'T5': 'R2' };
-                    return strategy[type];
+                    const strategy = { 'T1': 'R3', 'T2': 'R2', 'T3': 'R1', 'T4': 'R2', 'T5': 'R2', 'T6': 'R4' };
+                    return strategy[type] || 'R4';
                 },
 
                 async callAI(task, resistanceLabel) {
@@ -630,25 +632,24 @@ ${resistanceLabel || '未指定'}
 
 请严格输出 3 张动作卡片，分别对应：
 
-1. 更轻一点
-定义：只接触任务环境，不要求正式开始
-目标：降低抗拒感，让用户愿意先碰一下这件事
+1. 更轻一点 (Type: A)
+定义：只接触任务环境，不要求正式开始。
+例如：如果是写邮件，动作可以是“打开邮箱并点击写信”。如果是运动，可以是“换好运动鞋并站在垫子上”。
 
-2. 正常开始
-定义：完成一个低门槛准备动作
-目标：帮助用户真正进入任务，但不要求做很多
+2. 正常开始 (Type: B)
+定义：完成一个低门槛、无压力的准备动作。
+例如：如果是写邮件，动作可以是“写好邮件抬头和第一句问候”。如果是运动，可以是“做 2 分钟简单的拉伸”。
 
-3. 更具体一点
-定义：直接做第一个明确、最小的执行动作
-目标：帮助用户快速进入“已经开始了”的状态
+3. 更具体一点 (Type: C)
+定义：直接做一个最核心、最小的执行动作。
+例如：如果是写邮件，动作可以是“先把邮件里最重要的一件事用大白话写出来”。如果是运动，可以是“跟着视频做完第一组动作，哪怕只有 10 次”。
 
 输出要求：
 - 全中文
 - 每张卡片只写一句话
 - 每句话尽量控制在 15-25 个字
-- 要具体、温和、可执行
-- 不要输出任何多余文字、代码块或 JSON 标签
-- 严格按照以下 JSON 格式返回：
+- 要具体、温和、可执行，不要有说教感
+- 严格按照以下 JSON 格式返回，不要包含任何多余文字：
 {
   "options": [
     {"type": "A", "label": "更轻一点", "content": "内容"},
@@ -666,13 +667,14 @@ ${resistanceLabel || '未指定'}
                                 body: JSON.stringify({ task, resistanceLabel, prompt })
                             });
                         } else {
-                            const realKey = atob(this.encodedKey); 
+                            // 优先使用用户输入的 key，如果没有则使用内置混淆 key
+                            const activeKey = this.apiKey || atob(this.encodedKey); 
                             const url = `${this.apiBase.replace(/\/$/, '')}/chat/completions`;
                             response = await fetch(url, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${realKey}`
+                                    'Authorization': `Bearer ${activeKey}`
                                 },
                                 body: JSON.stringify({
                                     model: this.model,
@@ -701,7 +703,7 @@ ${resistanceLabel || '未指定'}
                     const resistance = this.selectedResistance || this.getDefaultResistance(type);
                     const resistanceLabel = this.resistanceLabels[resistance];
 
-                    if (this.aiEnabled && this.apiKey) {
+                    if (this.aiEnabled) {
                         const aiOptions = await this.callAI(this.taskInput, resistanceLabel);
                         if (aiOptions) {
                             this.currentOptions = aiOptions;
@@ -714,25 +716,20 @@ ${resistanceLabel || '未指定'}
 
                     // Fallback to local logic
                     setTimeout(() => {
-                        // 提取核心任务名词
                         const taskName = this.taskInput.replace(/写|做|复习|看|阅读|回|改|整理|制作|开始|一个|一些|一下/g, '').trim() || '这件事';
                         const verb = this.currentVerb;
-
-                        // 动态生成
                         const baseTemplates = this.templates[type][resistance];
+                        
                         this.currentOptions = baseTemplates.map(opt => {
-                            // 确定使用哪类自然模板 (OFFICE 或 ACTION)
                             const isActionTask = ['T5', 'T6'].includes(type);
                             const naturalPool = isActionTask ? this.naturalTemplates.ACTION : this.naturalTemplates.OFFICE;
 
-                            // 50% 概率使用特定的自然模板池，增加多样性
                             if (Math.random() > 0.5) {
                                 const pool = naturalPool[opt.type];
                                 let content = pool[Math.floor(Math.random() * pool.length)];
                                 content = content.replace(/{task}/g, taskName).replace(/{verb}/g, verb);
                                 return { ...opt, content };
                             }
-                            // 否则使用基础模板并进行名词注入
                             let content = opt.content.replace('这件事', `“${taskName}”`).replace(/{task}/g, taskName).replace(/{verb}/g, verb);
                             return { ...opt, content };
                         });
