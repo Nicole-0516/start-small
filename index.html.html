@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Small - 把难以开始的事，变成可以开始的一小步</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        
+        [x-cloak] { display: none !important; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: radial-gradient(circle at top left, #fffcf5 0%, #fff5f5 100%);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .custom-shadow {
+            box-shadow: 0 20px 50px -12px rgba(251, 146, 60, 0.12), 0 10px 15px -5px rgba(0, 0, 0, 0.01);
+        }
+
+        .btn-primary {
+            @apply bg-gradient-to-r from-amber-500 to-rose-500 text-white hover:from-amber-600 hover:to-rose-600 active:scale-[0.98] transition-all duration-500 shadow-xl shadow-orange-100;
+        }
+
+        .input-focus {
+            @apply focus:ring-4 focus:ring-amber-50 border-transparent focus:border-amber-200 transition-all;
+        }
+
+        .timer-circle {
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(251, 146, 60, 0.2);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="text-stone-800 min-h-screen flex flex-col items-center justify-center p-4 md:p-8" x-data="startSmallApp()" x-init="init()">
+
+    <!-- Background Decor -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-orange-100/40 rounded-full blur-3xl animate-pulse" style="animation-duration: 8s"></div>
+        <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-rose-100/40 rounded-full blur-3xl animate-pulse" style="animation-duration: 10s"></div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-lg glass-card rounded-[3rem] custom-shadow p-8 md:p-12 min-h-[620px] flex flex-col relative overflow-hidden" x-cloak>
+        
+        <!-- Header / Logo -->
+        <div class="mb-12 text-center" x-show="currentPage !== 'focus'">
+            <div class="inline-flex items-center justify-center w-14 h-14 bg-orange-500 rounded-2xl mb-5 shadow-xl shadow-orange-200 transform hover:rotate-6 transition-transform">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </div>
+            <h1 class="text-3xl font-bold tracking-tight text-stone-900">Start Small</h1>
+            <p class="text-stone-400 mt-2 font-medium">把开始变轻，让行动发生</p>
+        </div>
+
+        <!-- Page: Home -->
+        <div x-show="currentPage === 'home'" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-6" x-transition:enter-end="opacity-100 translate-y-0" class="flex-1 flex flex-col">
+            <h2 class="text-2xl font-semibold mb-4 text-stone-800 leading-tight">把那件你最不想开始的事写下来</h2>
+            <p class="text-stone-500 text-sm mb-10 leading-relaxed">不用做完，先开始一点点。我们会把它缩小成一个更容易开始的动作。</p>
+            
+            <div class="space-y-10 flex-1">
+                <div class="relative group">
+                    <input type="text" 
+                           x-model="taskInput" 
+                           placeholder="比如：复习课件 / 回那封邮件" 
+                           class="w-full p-6 rounded-2xl bg-orange-50/30 border border-orange-100/50 input-focus outline-none text-lg placeholder:text-stone-300">
+                    <div class="absolute inset-y-0 right-5 flex items-center pointer-events-none opacity-0 group-focus-within:opacity-100 transition-opacity">
+                        <span class="text-[10px] font-black tracking-widest text-orange-400 uppercase">Focus</span>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400 mb-5 ml-1">你现在感到的阻力是？</p>
+                    <div class="flex flex-wrap gap-3">
+                        <template x-for="(label, id) in resistanceLabels" :key="id">
+                            <button @click="selectedResistance = (selectedResistance === id ? null : id)"
+                                    :class="selectedResistance === id ? 'bg-orange-500 text-white shadow-lg shadow-orange-200 scale-105' : 'bg-white text-stone-600 border border-stone-100 hover:border-orange-200 hover:text-orange-500'"
+                                    class="px-5 py-3 rounded-2xl text-sm font-semibold transition-all duration-300">
+                                <span x-text="label"></span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12">
+                <button @click="generateOptions()" 
+                        :disabled="!taskInput.trim()"
+                        class="w-full py-5 btn-primary rounded-3xl font-bold text-lg disabled:opacity-30 disabled:cursor-not-allowed">
+                    帮我缩小一点
+                </button>
+                
+                <button x-show="history.length > 0" @click="currentPage = 'history'" 
+                        class="w-full mt-8 py-2 text-stone-400 text-sm font-bold hover:text-orange-500 transition-colors flex items-center justify-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    看看我上次停在哪里
+                </button>
+            </div>
+        </div>
+
+        <!-- Page: Options -->
+        <div x-show="currentPage === 'options'" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-6" x-transition:enter-end="opacity-100 translate-y-0" class="flex-1 flex flex-col">
+            <h2 class="text-2xl font-semibold mb-3 text-stone-800">选一个最容易开始的方式</h2>
+            <p class="text-stone-500 text-sm mb-10">你只需要选一个现在最不抗拒的动作</p>
+
+            <div class="space-y-5 flex-1 overflow-y-auto pr-1 custom-scrollbar">
+                <template x-for="option in currentOptions" :key="option.type">
+                    <button @click="selectedOption = option"
+                            :class="selectedOption?.type === option.type ? 'border-orange-500 bg-orange-50/50 ring-1 ring-orange-500 shadow-inner' : 'border-stone-50 bg-white/40'"
+                            class="w-full p-6 text-left rounded-3xl border-2 hover:border-orange-200 transition-all group relative overflow-hidden">
+                        <div x-show="selectedOption?.type === option.type" class="absolute top-0 right-0 p-3">
+                            <div class="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse"></div>
+                        </div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <span :class="selectedOption?.type === option.type ? 'text-orange-500' : 'text-stone-400'" 
+                                  class="text-[10px] font-black uppercase tracking-widest" x-text="option.label"></span>
+                        </div>
+                        <p :class="selectedOption?.type === option.type ? 'text-orange-900' : 'text-stone-700'" 
+                           class="text-lg leading-relaxed font-semibold" x-text="option.content"></p>
+                    </button>
+                </template>
+            </div>
+
+            <div class="mt-10 space-y-6 bg-orange-50/40 p-8 rounded-[2.5rem] border border-orange-100/50">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em]">启动时间</span>
+                    <div class="flex bg-white rounded-2xl p-1.5 shadow-sm border border-stone-100">
+                        <template x-for="t in [5, 10, 15]">
+                            <button @click="timerDuration = t"
+                                    :class="timerDuration === t ? 'bg-orange-500 text-white shadow-md' : 'text-stone-500 hover:text-orange-500'"
+                                    class="px-5 py-2 rounded-xl text-sm font-black transition-all" x-text="t + ' 分'"></button>
+                        </template>
+                    </div>
+                </div>
+                <button @click="startFocus()" 
+                        :disabled="!selectedOption"
+                        class="w-full py-5 btn-primary rounded-3xl font-bold text-lg">
+                    就从这个开始
+                </button>
+                <button @click="currentPage = 'home'" class="w-full text-stone-400 text-sm font-bold py-1 hover:text-stone-600">返回修改</button>
+            </div>
+        </div>
+
+        <!-- Page: Focus Session -->
+        <div x-show="currentPage === 'focus'" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="flex-1 flex flex-col items-center justify-center text-center">
+            <div class="mb-14">
+                <div class="inline-block px-5 py-2 bg-orange-50 text-orange-500 rounded-full text-[10px] font-black uppercase tracking-[0.3em] mb-8">Focusing</div>
+                <p class="text-2xl font-bold text-stone-800 px-8 leading-snug" x-text="selectedOption?.content"></p>
+            </div>
+
+            <div class="relative mb-16">
+                <!-- Progress Circle -->
+                <svg class="w-64 h-64 -rotate-90">
+                    <circle cx="128" cy="128" r="118" fill="none" stroke="currentColor" stroke-width="6" class="text-stone-100"></circle>
+                    <circle cx="128" cy="128" r="118" fill="none" stroke="url(#warm-gradient)" stroke-width="10" stroke-linecap="round"
+                            class="timer-circle"
+                            :stroke-dasharray="2 * Math.PI * 118"
+                            :stroke-dashoffset="2 * Math.PI * 118 * (1 - timeLeft / (timerDuration * 60))"></circle>
+                    <defs>
+                        <linearGradient id="warm-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#f97316" />
+                            <stop offset="100%" stop-color="#fb7185" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <span class="text-7xl font-extralight tracking-tighter font-mono text-stone-900" x-text="formatTime(timeLeft)"></span>
+                    <span class="text-[10px] font-black text-stone-400 mt-4 uppercase tracking-[0.3em]" x-text="timerRunning ? '剩余时间' : '已暂停'"></span>
+                </div>
+            </div>
+
+            <div class="h-12 mb-10">
+                <p class="text-stone-400 italic font-semibold text-sm px-8 transition-all duration-500" x-text="encouragementText"></p>
+            </div>
+
+            <div class="w-full flex gap-5">
+                <button @click="toggleTimer()" 
+                        class="flex-1 py-5 bg-white border border-stone-200 rounded-3xl font-black text-stone-600 hover:bg-stone-50 transition-all shadow-sm"
+                        x-text="timerRunning ? '暂停' : '继续'"></button>
+                <button @click="finishSession()" 
+                        class="flex-1 py-5 bg-stone-900 text-white rounded-3xl font-black hover:bg-stone-800 transition-all shadow-xl shadow-stone-200">
+                    提前结束
+                </button>
+            </div>
+        </div>
+
+        <!-- Page: Session End -->
+        <div x-show="currentPage === 'end'" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-6" x-transition:enter-end="opacity-100 translate-y-0" class="flex-1 flex flex-col">
+            <div class="flex items-center gap-4 mb-3">
+                <div class="w-10 h-10 bg-orange-400 rounded-2xl flex items-center justify-center shadow-xl shadow-orange-100">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-stone-800">你已经开了头</h2>
+            </div>
+            <p class="text-stone-500 text-sm mb-10 ml-1">在一次启动后帮助自己形成续接点</p>
+
+            <div class="space-y-8 flex-1">
+                <div>
+                    <label class="block text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mb-3 ml-2">你刚刚停在了哪里？</label>
+                    <textarea x-model="sessionNotes.stoppedAt" 
+                              placeholder="比如：我已经写了标题和两个点" 
+                              class="w-full p-6 rounded-3xl bg-orange-50/30 border border-orange-100/50 input-focus outline-none h-32 resize-none text-stone-700 placeholder:text-stone-300"></textarea>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mb-3 ml-2">下次可以从哪里继续？</label>
+                    <textarea x-model="sessionNotes.nextStep" 
+                              placeholder="比如：下次先把第三个点补上" 
+                              class="w-full p-6 rounded-3xl bg-orange-50/30 border border-orange-100/50 input-focus outline-none h-32 resize-none text-stone-700 placeholder:text-stone-300"></textarea>
+                </div>
+            </div>
+
+            <div class="mt-10 space-y-5">
+                <div class="grid grid-cols-2 gap-5">
+                    <button @click="continueSession(5)" class="py-5 bg-white border border-stone-200 rounded-3xl text-stone-600 font-black hover:bg-stone-50 text-sm shadow-sm transition-all">再继续 5 分钟</button>
+                    <button @click="continueSession(10)" class="py-5 bg-white border border-stone-200 rounded-3xl text-stone-600 font-black hover:bg-stone-50 text-sm shadow-sm transition-all">再继续 10 分钟</button>
+                </div>
+                <button @click="saveAndExit()" 
+                        class="w-full py-5 btn-primary rounded-3xl font-bold text-lg transition-all">
+                    先停在这里，保存进度
+                </button>
+            </div>
+        </div>
+
+        <!-- Page: History -->
+        <div x-show="currentPage === 'history'" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-x-6" x-transition:enter-end="opacity-100 translate-x-0" class="flex-1 flex flex-col h-full overflow-hidden">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold text-stone-800 tracking-tight">历史记录</h2>
+                <button @click="currentPage = 'home'" class="p-3 text-stone-400 hover:bg-orange-50 hover:text-orange-500 rounded-2xl transition-all">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <p class="text-stone-500 text-sm mb-10 font-medium">不用重新下决心，直接从上次停下来的地方继续</p>
+
+            <div class="flex-1 overflow-y-auto pr-3 space-y-6 custom-scrollbar">
+                <template x-for="item in history" :key="item.id">
+                    <div class="p-8 rounded-[2.5rem] bg-white border border-stone-100 hover:border-orange-200 hover:shadow-2xl hover:shadow-orange-100/40 transition-all group">
+                        <div class="flex justify-between items-start mb-5">
+                            <h3 class="font-bold text-stone-800 text-xl leading-tight" x-text="item.taskName"></h3>
+                            <span class="text-[10px] font-black uppercase bg-orange-50 text-orange-500 px-3 py-1.5 rounded-xl tracking-widest whitespace-nowrap ml-3" x-text="formatDate(item.timestamp)"></span>
+                        </div>
+                        <div class="space-y-4 mb-8">
+                            <div class="flex items-start gap-3">
+                                <div class="w-2 h-2 rounded-full bg-stone-200 mt-2 shrink-0"></div>
+                                <p class="text-xs text-stone-400 font-medium leading-relaxed">上次停在：<span class="text-stone-600 italic" x-text="item.stoppedAt || '未记录'"></span></p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-2 h-2 rounded-full bg-orange-400 mt-2 shrink-0 animate-pulse"></div>
+                                <p class="text-xs text-stone-400 font-black leading-relaxed">下次开始：<span class="text-orange-600" x-text="item.nextStep || '未记录'"></span></p>
+                            </div>
+                        </div>
+                        <button @click="resumeFromHistory(item)" class="w-full py-4 bg-orange-50 text-orange-600 font-black rounded-2xl text-sm hover:bg-orange-500 hover:text-white transition-all shadow-sm">从这里继续</button>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="mt-12 text-stone-400 text-[10px] font-black tracking-[0.4em] uppercase">
+        <p>Start Small · 2026 · Warmly Made</p>
+    </footer>
+
+    <script>
+        function startSmallApp() {
+            return {
+                currentPage: 'home',
+                taskInput: '',
+                selectedResistance: null,
+                selectedOption: null,
+                timerDuration: 5,
+                timeLeft: 0,
+                timerRunning: false,
+                timerInterval: null,
+                encouragementText: '',
+                sessionNotes: { stoppedAt: '', nextStep: '' },
+                history: [],
+                
+                resistanceLabels: {
+                    'R1': '太重要了，不敢开始',
+                    'R2': '感觉会花很久',
+                    'R3': '怕做不好',
+                    'R4': '不知道怎么起头'
+                },
+
+                encouragements: [
+                    '先开始一点点就好',
+                    '现在不用把它做完',
+                    '你不是要完成全部，你只是先开个头',
+                    '开始，比计划更重要',
+                    '完成比完美更重要',
+                    '就在这一刻，只关注这一个小动作'
+                ],
+
+                // Templates Matrix
+                templates: {
+                    'T1': { // 写作输出类
+                        'R1': [
+                            { type: 'A', label: '更轻一点', content: '先打开文档，不写内容，只看一眼标题和要求' },
+                            { type: 'B', label: '正常开始', content: '先写下标题，或者列出 2-3 个最粗略的点' },
+                            { type: 'C', label: '更具体一点', content: '先写第一句，不要求写好，只要写出来' }
+                        ],
+                        'R2': [
+                            { type: 'A', label: '更轻一点', content: '先打开文档，给自己 5 分钟，只决定要写哪一部分' },
+                            { type: 'B', label: '正常开始', content: '先只写提纲，不进入完整正文' },
+                            { type: 'C', label: '更具体一点', content: '先把开头那一小段写成很粗糙的草稿' }
+                        ],
+                        'R3': [
+                            { type: 'A', label: '更轻一点', content: '先允许自己写一个很烂的版本，不用改' },
+                            { type: 'B', label: '正常开始', content: '先写提纲或 bullet points，不要求完整句子' },
+                            { type: 'C', label: '更具体一点', content: '先写两三句最粗糙的草稿，之后再改' }
+                        ],
+                        'R4': [
+                            { type: 'A', label: '更轻一点', content: '先把题目和要求抄到文档里' },
+                            { type: 'B', label: '正常开始', content: '先列出 3 个你可能会写的点' },
+                            { type: 'C', label: '更具体一点', content: '先写第一段里最容易写的一句' }
+                        ]
+                    },
+                    'T2': { // 阅读复习类
+                        'R1': [
+                            { type: 'A', label: '更轻一点', content: '先把资料打开，只看目录或第一页' },
+                            { type: 'B', label: '正常开始', content: '先看前 2 页，划出你最熟悉的部分' },
+                            { type: 'C', label: '更具体一点', content: '先读一小段，并写下 1 句你看懂了什么' }
+                        ],
+                        'R2': [
+                            { type: 'A', label: '更轻一点', content: '先只决定今天看哪一小部分，不要求全部完成' },
+                            { type: 'B', label: '正常开始', content: '先看 3-5 页，停下来也没关系' },
+                            { type: 'C', label: '更具体一点', content: '先读第一页并记 2 个关键词' }
+                        ],
+                        'R3': [
+                            { type: 'A', label: '更轻一点', content: '先浏览，不要求立刻记住' },
+                            { type: 'B', label: '正常开始', content: '先只标出重点，不急着理解全部' },
+                            { type: 'C', label: '更具体一点', content: '先看一页，并写下一个你已经明白的点' }
+                        ],
+                        'R4': [
+                            { type: 'A', label: '更轻一点', content: '先打开资料，看目录或标题' },
+                            { type: 'B', label: '正常开始', content: '先从最短、最熟悉的一部分开始看' },
+                            { type: 'C', label: '更具体一点', content: '先读第一页，并圈出 3 个关键词' }
+                        ]
+                    },
+                    'T3': { // 沟通回复类
+                        'R1': [
+                            { type: 'A', label: '更轻一点', content: '先打开这封邮件或对话，不急着回复' },
+                            { type: 'B', label: '正常开始', content: '先写称呼和第一句 opening' },
+                            { type: 'C', label: '更具体一点', content: '先写一个很简短的回复草稿，之后再润色' }
+                        ],
+                        'R2': [
+                            { type: 'A', label: '更轻一点', content: '先判断这条回复最核心要说哪一件事' },
+                            { type: 'B', label: '正常开始', content: '先列出 2 个你必须回复的点' },
+                            { type: 'C', label: '更具体一点', content: '先把最核心的一段回复写出来' }
+                        ],
+                        'R3': [
+                            { type: 'A', label: '更轻一点', content: '先写一个只给自己看的草稿版本' },
+                            { type: 'B', label: '正常开始', content: '先用最直接的话写出意思，不考虑礼貌润色' },
+                            { type: 'C', label: '更具体一点', content: '先把回复主体写出来，结尾和措辞稍后再改' }
+                        ],
+                        'R4': [
+                            { type: 'A', label: '更轻一点', content: '先复制对方最需要你回应的那一句' },
+                            { type: 'B', label: '正常开始', content: '先写称呼 + “谢谢你的邮件/消息”' },
+                            { type: 'C', label: '更具体一点', content: '先写第一句：你这次主要想表达什么' }
+                        ]
+                    },
+                    'T4': { // 文件整理制作类
+                        'R1': [
+                            { type: 'A', label: '更轻一点', content: '先打开文件，看看现在停在哪' },
+                            { type: 'B', label: '正常开始', content: '先只改标题、目录或第一页' },
+                            { type: 'C', label: '更具体一点', content: '先完成一个最小模块，比如一页或一栏' }
+                        ],
+                        'R2': [
+                            { type: 'A', label: '更轻一点', content: '先把这件事拆成今天只做的一小部分' },
+                            { type: 'B', label: '正常开始', content: '先只处理第一页、第一栏或第一部分' },
+                            { type: 'C', label: '更具体一点', content: '先完成一个最简单的可见修改' }
+                        ],
+                        'R3': [
+                            { type: 'A', label: '更轻一点', content: '先浏览现有内容，不急着改' },
+                            { type: 'B', label: '正常开始', content: '先改结构，不改细节' },
+                            { type: 'C', label: '更具体一点', content: '先把最明显的一处问题修掉' }
+                        ],
+                        'R4': [
+                            { type: 'A', label: '更轻一点', content: '先打开文件，把要处理的部分找出来' },
+                            { type: 'B', label: '正常开始', content: '先列出你今天只要改的 3 个地方' },
+                            { type: 'C', label: '更具体一点', content: '先处理第一处最明确的问题' }
+                        ]
+                    },
+                    'T5': { // 生活执行类
+                        'R1': [
+                            { type: 'A', label: '更轻一点', content: '先走到要处理这件事的地方，看一眼现状' },
+                            { type: 'B', label: '正常开始', content: '先把最基本的工具或材料拿出来' },
+                            { type: 'C', label: '更具体一点', content: '先做第一步最简单的动作' }
+                        ],
+                        'R2': [
+                            { type: 'A', label: '更轻一点', content: '先看一眼今天实际要处理什么，不急着全部做完' },
+                            { type: 'B', label: '正常开始', content: '先把会用到的工具或材料准备出来' },
+                            { type: 'C', label: '更具体一点', content: '先完成第一步，比如把米煮上 / 把衣服放进洗衣机 / 把垃圾装袋' }
+                        ],
+                        'R3': [
+                            { type: 'A', label: '更轻一点', content: '先开始，不要求一次做得很完美' },
+                            { type: 'B', label: '正常开始', content: '先只做最基础版本，不加额外要求' },
+                            { type: 'C', label: '更具体一点', content: '先把最核心的一步做掉，其他之后再说' }
+                        ],
+                        'R4': [
+                            { type: 'A', label: '更轻一点', content: '先看一下这件事最先需要什么工具 or 材料' },
+                            { type: 'B', label: '正常开始', content: '先准备第一步会用到的东西' },
+                            { type: 'C', label: '更具体一点', content: '先把第一个明确动作做掉' }
+                        ]
+                    }
+                },
+
+                currentOptions: [],
+
+                init() {
+                    const savedHistory = localStorage.getItem('startSmallHistory');
+                    if (savedHistory) {
+                        this.history = JSON.parse(savedHistory);
+                    }
+                },
+
+                identifyTaskType(task) {
+                    const t = task.toLowerCase();
+                    if (/(写|essay|report|提纲|草稿|正文|稿|文案|paper|writing|thesis|dissertation)/.test(t)) return 'T1';
+                    if (/(复习|revision|看|阅读|slides|读书|书|讲义|lecture|read|study|review)/.test(t)) return 'T2';
+                    if (/(邮件|回复|联系|message|消息|email|发给|问|mail|reply|contact|send)/.test(t)) return 'T3';
+                    if (/(ppt|presentation|简历|整理|制作|表格|文档|填表|excel|file|organize|format|edit|cv)/.test(t)) return 'T4';
+                    if (/(做饭|晚饭|洗衣服|收拾|出门|打扫|买菜|垃圾|米|锅|cook|dinner|laundry|clean|room|go out)/.test(t)) return 'T5';
+                    return 'T1';
+                },
+
+                getDefaultResistance(type) {
+                    const strategy = { 'T1': 'R3', 'T2': 'R2', 'T3': 'R1', 'T4': 'R2', 'T5': 'R2' };
+                    return strategy[type];
+                },
+
+                generateOptions() {
+                    const type = this.identifyTaskType(this.taskInput);
+                    const resistance = this.selectedResistance || this.getDefaultResistance(type);
+                    this.currentOptions = this.templates[type][resistance];
+                    this.selectedOption = this.currentOptions[1];
+                    this.currentPage = 'options';
+                },
+
+                startFocus() {
+                    this.timeLeft = this.timerDuration * 60;
+                    this.currentPage = 'focus';
+                    this.startTimer();
+                    this.updateEncouragement();
+                },
+
+                startTimer() {
+                    this.timerRunning = true;
+                    this.timerInterval = setInterval(() => {
+                        if (this.timeLeft > 0) {
+                            this.timeLeft--;
+                            if (this.timeLeft % 30 === 0) this.updateEncouragement();
+                        } else {
+                            this.finishSession();
+                        }
+                    }, 1000);
+                },
+
+                toggleTimer() {
+                    if (this.timerRunning) {
+                        clearInterval(this.timerInterval);
+                        this.timerRunning = false;
+                    } else {
+                        this.startTimer();
+                    }
+                },
+
+                updateEncouragement() {
+                    this.encouragementText = this.encouragements[Math.floor(Math.random() * this.encouragements.length)];
+                },
+
+                formatTime(seconds) {
+                    const m = Math.floor(seconds / 60);
+                    const s = seconds % 60;
+                    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                },
+
+                finishSession() {
+                    clearInterval(this.timerInterval);
+                    this.timerRunning = false;
+                    this.currentPage = 'end';
+                },
+
+                continueSession(minutes) {
+                    this.timerDuration = minutes;
+                    this.startFocus();
+                },
+
+                saveAndExit() {
+                    const newItem = {
+                        id: Date.now(),
+                        taskName: this.taskInput,
+                        stoppedAt: this.sessionNotes.stoppedAt,
+                        nextStep: this.sessionNotes.nextStep,
+                        timestamp: new Date().toISOString()
+                    };
+                    this.history.unshift(newItem);
+                    localStorage.setItem('startSmallHistory', JSON.stringify(this.history));
+                    this.taskInput = '';
+                    this.selectedResistance = null;
+                    this.sessionNotes = { stoppedAt: '', nextStep: '' };
+                    this.currentPage = 'home';
+                },
+
+                resumeFromHistory(item) {
+                    this.taskInput = item.taskName;
+                    this.sessionNotes = { stoppedAt: item.stoppedAt || '', nextStep: item.nextStep || '' };
+                    this.generateOptions();
+                },
+
+                formatDate(isoString) {
+                    const d = new Date(isoString);
+                    return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes().toString().padStart(2, '0')}`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
